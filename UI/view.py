@@ -21,6 +21,14 @@ class View:
         # Controller
         self.controller = None
 
+        #element UI inizializzati con None
+        self.txt_titolo=None
+        self.dd_bibioteca=None
+        self.dd_genere=None
+        self.btn_mostra=None
+        self.list_view=None
+        self.toggle_cambia_tema=None
+
     def show_alert(self, messaggio):
         self.alert.show_alert(messaggio)
 
@@ -33,13 +41,29 @@ class View:
     def load_interface(self):
         """ Crea e aggiunge gli elementi di UI alla pagina e la aggiorna. """
         # --- Sezione 1: Intestazione ---
-        self.txt_titolo = ft.Text(value="Biblioteche di Torino", size=38, weight=ft.FontWeight.BOLD)
+        self.txt_titolo = ft.Text(
+            value="Biblioteche di Torino", size=38, weight=ft.FontWeight.BOLD)
 
         # --- Sezione 2: Filtraggio ---
-        # TODO
+        self.dd_biblioteca=ft.Dropdown(
+            label="Biblioteca",
+            width=300,
+            on_select=(self.controller.seleziona_biblioteca if self.controller else None),
+        )
+        self.dd_genere = ft.Dropdown(
+            label="Genere",
+            width=300,
+            on_select=(self.controller.seleziona_genere if self.controller else None),
+        )
+
+        self.btn_mostra = ft.Button(
+            content="Mostra libri",
+            on_click=self.controller.handle_mostra_libri if self.controller else None,
+        )
 
         # Sezione 3: Libri
-        # TODO
+        self.list_view=ft.ListView(
+        expand=1, spacing=10, padding=10, auto_scroll=False)
 
         # --- Toggle Tema ---
         self.toggle_cambia_tema = ft.Switch(label="Tema scuro", value=True, on_change=self.cambia_tema)
@@ -53,11 +77,12 @@ class View:
             ft.Divider(),
 
             # Sezione 2: Filtraggio
-            # TODO
+            ft.Row([self.dd_biblioteca, self.dd_genere, self.btn_mostra],
+                alignment=ft.MainAxisAlignment.CENTER),
+            ft.Divider(),
 
             # Sezione 3: Libri
-            # TODO
-        )
+            self.list_view,)
 
         self.page.scroll = "adaptive"
         self.page.update()
